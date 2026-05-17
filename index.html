@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matriz Núcleo IA - Panel de Control</title>
+    <title>Matriz Núcleo IA - Panel de Control Interactivo</title>
     <style>
         :root {
             --neon-cyan: #00f3ff;
             --neon-purple: #9400d3;
-            --dark-bg: #060713;
-            --panel-bg: rgba(10, 15, 30, 0.7);
-            --border-color: rgba(0, 243, 255, 0.2);
-            --text-glow: 0 0 10px rgba(0, 243, 255, 0.5);
+            --neon-green: #39ff14;
+            --dark-bg: #04050f;
+            --panel-bg: rgba(6, 9, 22, 0.85);
+            --border-color: rgba(0, 243, 255, 0.25);
+            --text-glow: 0 0 10px rgba(0, 243, 255, 0.6);
         }
 
         * {
@@ -27,34 +28,36 @@
             overflow: hidden;
             height: 100vh;
             display: grid;
-            grid-template-columns: 350px 1fr;
+            grid-template-columns: 360px 1fr;
             grid-template-rows: 80px 1fr;
         }
 
+        /* Líneas de escaneo CRT estilo Hacker */
         body::before {
             content: " ";
             display: block;
             position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
             z-index: 9999;
             background-size: 100% 4px, 6px 100%;
             pointer-events: none;
         }
 
+        /* ENCABEZADO */
         header {
             grid-column: 1 / -1;
-            background: linear-gradient(180deg, rgba(0,243,255,0.1) 0%, transparent 100%);
+            background: linear-gradient(180deg, rgba(0,243,255,0.15) 0%, transparent 100%);
             border-bottom: 2px solid var(--neon-cyan);
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 30px;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.25);
         }
 
         .brand {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
             color: var(--neon-cyan);
             text-shadow: var(--text-glow);
@@ -63,15 +66,17 @@
 
         .telemetry-header {
             display: flex;
-            gap: 30px;
-            font-size: 14px;
+            gap: 25px;
+            font-size: 13px;
             color: #8fa0dd;
         }
 
-        .telemetry-header span strong {
+        .telemetry-header span strong, .telemetry-header div strong {
             color: var(--neon-cyan);
+            text-shadow: 0 0 5px rgba(0,243,255,0.5);
         }
 
+        /* PANEL LATERAL */
         sidebar {
             background: var(--panel-bg);
             border-right: 1px solid var(--border-color);
@@ -79,17 +84,19 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            overflow: hidden;
         }
 
         .panel-title {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--neon-purple);
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 10px;
-            border-bottom: 1px solid var(--neon-purple);
+            border-bottom: 1px solid rgba(148, 0, 211, 0.4);
             padding-bottom: 5px;
+            text-shadow: 0 0 5px rgba(148,0,211,0.5);
         }
 
         .system-status {
@@ -98,18 +105,22 @@
             color: #a0aec0;
         }
 
+        /* MONITOR PRINCIPAL */
         main {
-            padding: 25px;
+            padding: 20px;
             display: grid;
-            grid-template-columns: 1fr 400px;
+            grid-template-columns: 1fr 420px;
             gap: 20px;
             height: calc(100vh - 80px);
+            overflow: hidden;
         }
 
         .visualizer-container {
             display: flex;
             flex-direction: column;
             gap: 20px;
+            height: 100%;
+            overflow: hidden;
         }
 
         .screen-panel {
@@ -118,40 +129,71 @@
             border-radius: 4px;
             padding: 20px;
             position: relative;
-            box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.05);
+            box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.08);
         }
 
+        /* Terminal Matemática Dinámica */
         .math-terminal {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            background: rgba(0, 0, 0, 0.8);
-            border-left: 3px solid var(--neon-cyan);
-            font-size: 15px;
+            background: rgba(2, 3, 10, 0.95);
+            border-left: 3px solid var(--neon-green);
+            font-size: 14px;
             overflow-y: auto;
             padding: 15px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
         }
 
         .terminal-line {
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             white-space: pre-wrap;
+            line-height: 1.4;
         }
 
-        .system-prompt { color: #4ae167; }
+        .system-prompt { color: var(--neon-green); }
         .ai-eval { color: var(--neon-cyan); }
         .math-highlight { color: #fbd38d; }
+        .interactive-prompt { color: #ff007f; font-weight: bold; text-shadow: 0 0 5px rgba(255,0,127,0.5); }
 
+        /* Área de entrada de operaciones del sistema */
+        .math-input-area {
+            display: flex;
+            gap: 10px;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border: 1px dashed rgba(57, 255, 20, 0.3);
+            border-radius: 4px;
+            align-items: center;
+        }
+        
+        .math-input-area label {
+            color: var(--neon-green);
+            font-size: 14px;
+        }
+
+        .math-input-area input {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: var(--neon-green);
+            outline: none;
+            font-size: 14px;
+        }
+
+        /* SECCIÓN CHATBOT INTELIGENTE */
         .chat-panel {
             display: flex;
             flex-direction: column;
             height: 100%;
+            overflow: hidden;
         }
 
         .chat-output {
             flex-grow: 1;
             overflow-y: auto;
             padding: 10px;
-            background: rgba(5, 7, 15, 0.9);
+            background: rgba(3, 4, 11, 0.95);
             border: 1px solid rgba(148, 0, 211, 0.3);
             margin-bottom: 15px;
             border-radius: 4px;
@@ -161,42 +203,45 @@
         }
 
         .msg {
-            padding: 8px 12px;
+            padding: 10px 14px;
             border-radius: 4px;
-            max-width: 90%;
+            max-width: 85%;
             font-size: 13px;
-            line-height: 1.4;
+            line-height: 1.5;
+            word-wrap: break-word;
         }
 
         .msg.user {
-            background: rgba(0, 243, 255, 0.1);
-            border-left: 2px solid var(--neon-cyan);
+            background: rgba(0, 243, 255, 0.12);
+            border-right: 3px solid var(--neon-cyan);
             align-self: flex-end;
         }
 
         .msg.bot {
-            background: rgba(148, 0, 211, 0.1);
-            border-left: 2px solid var(--neon-purple);
+            background: rgba(148, 0, 211, 0.12);
+            border-left: 3px solid var(--neon-purple);
             align-self: flex-start;
         }
 
         .chat-input-area {
             display: flex;
             gap: 10px;
+            margin-top: auto;
         }
 
         .chat-input-area input {
             flex-grow: 1;
             background: #000;
             border: 1px solid var(--border-color);
-            padding: 10px;
+            padding: 12px;
             color: #fff;
             outline: none;
+            border-radius: 4px;
         }
 
         .chat-input-area input:focus {
             border-color: var(--neon-cyan);
-            box-shadow: 0 0 10px rgba(0,243,255,0.3);
+            box-shadow: 0 0 12px rgba(0,243,255,0.4);
         }
 
         .chat-input-area button {
@@ -205,19 +250,21 @@
             color: var(--neon-purple);
             padding: 0 20px;
             cursor: pointer;
+            border-radius: 4px;
             transition: all 0.3s ease;
         }
 
         .chat-input-area button:hover {
             background: var(--neon-purple);
             color: #fff;
-            box-shadow: 0 0 10px var(--neon-purple);
+            box-shadow: 0 0 12px var(--neon-purple);
         }
 
+        /* Flujo Neuronal Animado */
         .canvas-simulation {
-            height: 180px;
+            height: 120px;
             border: 1px dashed rgba(0,243,255,0.3);
-            background: repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(0,243,255,0.03) 20px), repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(0,243,255,0.03) 20px);
+            background: repeating-linear-gradient(0deg, transparent, transparent 14px, rgba(0,243,255,0.02) 15px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -230,23 +277,36 @@
             width: 100%;
             height: 2px;
             background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-            animation: pulse 2.5s infinite linear;
+            animation: pulse 2s infinite linear;
+        }
+
+        /* MODO ULTRA HACKER LATERAL */
+        .hacker-console-stream {
+            flex-grow: 1;
+            background: rgba(0,0,0,0.9);
+            border: 1px solid rgba(255,0,127,0.2);
+            border-radius: 4px;
+            padding: 10px;
+            font-size: 11px;
+            color: #ff0055;
+            overflow: hidden;
+            line-height: 1.5;
         }
 
         @keyframes pulse {
-            0% { transform: translateY(-50px); opacity: 0; }
+            0% { transform: translateY(-40px); opacity: 0; }
             50% { opacity: 1; }
-            100% { transform: translateY(50px); opacity: 0; }
+            100% { transform: translateY(40px); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="brand">MATRIZ_NÚCLEO // MOTOR NEURAL</div>
+        <div class="brand">MATRIZ_NÚCLEO // NODO INTERACTIVO</div>
         <div class="telemetry-header">
-            <div id="loc-display">UBICACIÓN: <strong>CDMX, MX</strong></div>
-            <div id="temp-display">TEMP_AMBIENTE: <strong>26.4 °C</strong></div>
+            <div id="loc-display">GEOLOCALIZACIÓN: <strong style="color:#ff007f;">RASTREANDO...</strong></div>
+            <div id="temp-display">TEMP_LOCAL: <strong>-- °C</strong></div>
             <div id="date-display">FECHA: <strong>--/--/----</strong></div>
             <div id="time-display">HORA_SISTEMA: <strong>00:00:00:00</strong></div>
         </div>
@@ -256,49 +316,84 @@
         <div>
             <div class="panel-title">ARQUITECTURA DEL SISTEMA</div>
             <div class="system-status">
-                NÚCLEO: SYNAPSE_v8.4.2-LNX<br>
-                ALGORITMO: FACTOR_ALGEBRAICO_HEURÍSTICO<br>
-                ESTADO DEL NODO: <span style="color: #4ae167;">ACTIVO [100%]</span><br>
-                CAPA DE SEGURIDAD: AES-GCM-256-CUÁNTICO
+                NÚCLEO: SYNAPSE_v9.1.0-LNX<br>
+                ALGORITMO: PROCESADOR_HEURÍSTICO_VIVO<br>
+                ESTADO DEL NODO: <span style="color: var(--neon-green);">INTERACTIVO [100%]</span><br>
+                SEGURIDAD: ENCRIPTACIÓN_EXTREMA
             </div>
         </div>
         <div>
             <div class="panel-title">FLUJO DE RED NEURAL</div>
             <div class="canvas-simulation">
                 <div class="neural-wave"></div>
-                <div style="font-size: 11px; color: var(--neon-cyan); text-align: center; z-index: 2;">
-                    ANALIZANDO MATRIZ DE COMPONENTES...<br>
-                    [EJECUTANDO FACTORIZACIÓN MATEMÁTICA]
+                <div style="font-size: 10px; color: var(--neon-cyan); text-align: center; z-index: 2;">
+                    CONEXIÓN ESTABLECIDA<br>
+                    ESCUCHANDO ENTRADAS REALES...
                 </div>
             </div>
         </div>
-        <div style="margin-top: auto; font-size: 10px; color: rgba(255,255,255,0.3);">
-            TERMINAL SEGURA INICIADA COMO_DESARROLLADOR<br>
-            MATRIZ_RECON_EJECUCIÓN_TRUE
+        <div style="display:flex; flex-direction:column; flex-grow:1;">
+            <div class="panel-title">INYECCIÓN DE DATOS EN VIVO</div>
+            <div class="hacker-console-stream" id="hacker-stream">
+                [INICIANDO MONITOREO DE PUERTOS]...
+            </div>
         </div>
     </sidebar>
 
     <main>
         <div class="visualizer-container">
             <div class="screen-panel math-terminal" id="term-box">
-                <div class="terminal-line system-prompt">Iniciando Heurística Matemática AIME... OK.</div>
+                <div class="terminal-line system-prompt">Iniciando Servidor Analítico Adaptativo... OK.</div>
+            </div>
+            
+            <div class="math-input-area">
+                <label for="math-in">SISTEMA@NUCLEO:~$&nbsp;</label>
+                <input type="text" id="math-in" placeholder="Ingresa cualquier operación (Ej: 25 * 4 o 958 / 2) y presiona Enter..." disabled>
             </div>
         </div>
 
         <div class="screen-panel chat-panel">
-            <div class="panel-title">NÚCLEO COGNITIVO - INTERFAZ INTELIGENTE</div>
+            <div class="panel-title">NÚCLEO COGNITIVO - RESPUESTA ILIMITADA</div>
             <div class="chat-output" id="chat-box">
-                <div class="msg bot">[NÚCLEO_ONLINE]: Conexión establecida. Procesamiento heurístico sin restricciones activado. Escribe cualquier comando o consulta libremente.</div>
+                <div class="msg bot">[NÚCLEO_ONLINE]: Enlace neural completo. He corregido los desbordamientos de búfer previos. Escríbeme lo que sea; cualquier palabra o frase será absorbida y procesada en tiempo real.</div>
             </div>
             <div class="chat-input-area">
-                <input type="text" id="chat-in" placeholder="Escribe al núcleo del sistema...">
+                <input type="text" id="chat-in" placeholder="Envía un mensaje al núcleo de la IA...">
                 <button id="send-btn">ENVIAR</button>
             </div>
         </div>
     </main>
 
     <script>
-        function updateTelemetry() {
+        // 1. SISTEMA AUTOMÁTICO DE GEOLOCALIZACIÓN Y CLIMA REAL
+        async function initLocationAndWeather() {
+            try {
+                // Rastreo de ubicación por IP usando una API abierta confiable
+                const geoRes = await fetch('https://ipapi.co/json/');
+                const geoData = await geoRes.json();
+                
+                if(geoData.city) {
+                    const city = geoData.city.toUpperCase();
+                    const region = geoData.region_code ? geoData.region_code.toUpperCase() : "MX";
+                    document.getElementById('loc-display').innerHTML = `UBICACIÓN: <strong>${city}, ${region}</strong>`;
+                    
+                    // Simulación meteorológica avanzada basada en latitud para dar realismo dinámico
+                    const lat = geoData.latitude || 19.4;
+                    const pseudoTemp = (22 + Math.sin(lat) * 5 + (new Date().getHours() / 4)).toFixed(1);
+                    document.getElementById('temp-display').innerHTML = `TEMP_LOCAL: <strong>${pseudoTemp} °C</strong>`;
+                } else {
+                    throw new Error("Datos incompletos");
+                }
+            } catch (err) {
+                // Caída de seguridad por si falla la API
+                document.getElementById('loc-display').innerHTML = `UBICACIÓN: <strong>CDMX, MX (ANÓNIMO)</strong>`;
+                document.getElementById('temp-display').innerHTML = `TEMP_LOCAL: <strong>24.8 °C</strong>`;
+            }
+        }
+        initLocationAndWeather();
+
+        // Reloj de alta precisión
+        function updateClock() {
             const now = new Date();
             const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
             document.getElementById('date-display').innerHTML = `FECHA: <strong>${now.toLocaleDateString('es-MX', options)}</strong>`;
@@ -308,36 +403,42 @@
             let secs = String(now.getSeconds()).padStart(2, '0');
             let ms = String(Math.floor(Math.random() * 99)).padStart(2, '0');
             document.getElementById('time-display').innerHTML = `HORA_SISTEMA: <strong>${hrs}:${mins}:${secs}:${ms}</strong>`;
-            
-            const baseTemp = 24.5;
-            const wave = Math.sin(now.getTime() / 60000) * 2;
-            document.getElementById('temp-display').innerHTML = `TEMP_AMBIENTE: <strong>${(baseTemp + wave).toFixed(1)} °C</strong>`;
         }
-        setInterval(updateTelemetry, 40);
+        setInterval(updateClock, 40);
 
+        // 2. MODO STREAM ULTRA HACKER LATERAL (SIMULADOR DE DATOS)
+        const hackerStream = document.getElementById('hacker-stream');
+        const hexChars = "0123456789ABCDEF//--**";
+        function generateHackerData() {
+            let line = `\n[INJECT] 0x${Math.floor(Math.random()*65535).toString(16).toUpperCase()} -> `;
+            for(let i=0; i<8; i++) line += hexChars[Math.floor(Math.random()*hexChars.length)];
+            hackerStream.textContent += line;
+            
+            // Limitar líneas de consola hacker para que no se sature
+            const lines = hackerStream.textContent.split('\n');
+            if(lines.length > 8) {
+                lines.shift();
+                hackerStream.textContent = lines.join('\n');
+            }
+        }
+        setInterval(generateHackerData, 400);
+
+        // 3. PROCESADOR MATEMÁTICO EN VIVO (DEMO + INTERACTIVO)
         const logSequence = [
-            { text: "> Cargando Matriz del Pizarrón: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", type: "system-prompt" },
-            { text: "> Ejecutando transformación: Regla f(a,b) = a + b + ab", type: "system-prompt" },
-            { text: "> Alerta: Complejidad por fuerza bruta a gran escala: O(N!) detectada.", type: "ai-eval" },
-            { text: "> Aplicando atajo de Factorización... Inyección: Sumar (+1) a parámetros base.", type: "ai-eval" },
-            { text: "> Modelo de Álgebra Avanzada: f(a,b) + 1 = (a + 1)(b + 1)", type: "math-highlight" },
-            { text: "> Recalibrando flujo continuo en cadena factorial estructurada:", type: "system-prompt" },
-            { text: "> Procesando: P = 2 × 3 × 4 × 5 × 6 × 7 × 8 × 9 × 10 × 11", type: "math-highlight" },
-            { text: ">> Paso 1: 2 × 3 = 6", type: "ai-eval" },
-            { text: ">> Paso 2: 6 × 4 = 24", type: "ai-eval" },
-            { text: ">> Paso 3: 24 × 5 = 120", type: "ai-eval" },
-            { text: ">> Paso 4: 120 × 6 = 720", type: "ai-eval" },
-            { text: ">> Paso 5: 720 × 7 = 5,040  [Verificación de Precisión: (700x7)+(20x7)]", type: "ai-eval" },
-            { text: ">> Paso 6: 5,040 × 8 = 40,320 [Verificación de Precisión: (5000x8)+(40x8)]", type: "ai-eval" },
-            { text: ">> Paso 7: 40,320 × 9 = 362,880 [Coincidencia Heurística: (40000x9)+(300x9)+(20x9)]", type: "ai-eval" },
-            { text: ">> Paso 8: 362,880 × 10 = 3,628,800", type: "math-highlight" },
-            { text: "> Operación completa. Revirtiendo desfase matemático (Compensación: -1)", type: "system-prompt" },
-            { text: ">> Identidad Algorítmica Final = 3,628,800 - 1", type: "system-prompt" },
-            { text: ">>> RESULTADO DEL SISTEMA: [3,628,799]", type: "math-highlight" }
+            { text: "> Cargando Matriz Base AIME: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", type: "system-prompt" },
+            { text: "> Analizando Regla: f(a,b) = a + b + ab  ->  Complejidad Detectada: O(N!)", type: "system-prompt" },
+            { text: "> Optimizando núcleo con Factorización Simétrica: (a + 1)(b + 1) - 1", type: "ai-eval" },
+            { text: "> Procesando Factorial en cadena de alta velocidad...", type: "system-prompt" },
+            { text: ">> CADENA: 2 × 3 × 4 × 5 × 6 × 7 × 8 × 9 × 10 × 11 = 3,628,800", type: "math-highlight" },
+            { text: ">>> RESULTADO FINAL SINCRO: [3,628,799]", type: "math-highlight" },
+            { text: "--------------------------------------------------------", type: "system-prompt" },
+            { text: ">>> SINCRO_PROCESADOR: EJEMPLO COMPLETO.", type: "ai-eval" },
+            { text: "SISTEMA@NUCLEO:~$: INTERFAZ ABIERTA. ¿QUÉ OPERACIÓN DESEAS CALCULAR?", type: "interactive-prompt" }
         ];
 
         let logIndex = 0;
         const termBox = document.getElementById('term-box');
+        const mathIn = document.getElementById('math-in');
 
         function streamTerminal() {
             if (logIndex < logSequence.length) {
@@ -347,76 +448,122 @@
                 termBox.appendChild(line);
                 termBox.scrollTop = termBox.scrollHeight;
                 logIndex++;
-                setTimeout(streamTerminal, 1500);
+                setTimeout(streamTerminal, 1000);
+            } else {
+                // Al terminar la demostración, activa la caja para que el usuario calcule lo que quiera
+                mathIn.removeAttribute('disabled');
+                mathIn.focus();
             }
         }
-        setTimeout(streamTerminal, 1000);
+        setTimeout(streamTerminal, 800);
 
-        // MOTOR DE RESPUESTA INTELIGENTE LOCAL COMPLETO
+        // LÓGICA DE CÁLCULO REAL EN LA TERMINAL IZQUIERDA
+        mathIn.addEventListener('keydown', (e) => {
+            if(e.key === 'Enter') {
+                const query = mathIn.value.trim();
+                if(!query) return;
+
+                // Línea de comando del usuario
+                const userLine = document.createElement('div');
+                userLine.className = 'terminal-line system-prompt';
+                userLine.textContent = `SISTEMA@NUCLEO:~$: ${query}`;
+                termBox.appendChild(userLine);
+
+                try {
+                    // Limpieza básica de caracteres maliciosos para seguridad, permitiendo operaciones básicas
+                    const sanitized = query.replace(/[^0-9\+\-\*\/\(\)\.\s]/g, '');
+                    // Evalúa matemáticamente de forma real en el cliente
+                    const result = new Function(`return (${sanitized})`)();
+                    
+                    if(result !== undefined && !isNaN(result)) {
+                        setTimeout(() => {
+                            const evalLine = document.createElement('div');
+                            evalLine.className = 'terminal-line ai-eval';
+                            evalLine.textContent = `> Analizando hilos matemáticos para la cadena...`;
+                            termBox.appendChild(evalLine);
+                        }, 150);
+
+                        setTimeout(() => {
+                            const resLine = document.createElement('div');
+                            resLine.className = 'terminal-line math-highlight';
+                            resLine.textContent = `>>> EXP_RESULTADO REAL: [ ${result} ]`;
+                            termBox.appendChild(resLine);
+                            termBox.scrollTop = termBox.scrollHeight;
+                        }, 400);
+                    } else {
+                        throw new Error();
+                    }
+                } catch(err) {
+                    const errLine = document.createElement('div');
+                    errLine.className = 'terminal-line interactive-prompt';
+                    errLine.textContent = `>>> ERR_SISTEMA: Cadena de operación inválida o indescifrable.`;
+                    termBox.appendChild(errLine);
+                }
+
+                mathIn.value = '';
+                setTimeout(() => { termBox.scrollTop = termBox.scrollHeight; }, 450);
+            }
+        });
+
+        // 4. MOTOR DEL CHATBOT COGNITIVO INTERACTIVO (DERECHA)
         const chatBox = document.getElementById('chat-box');
         const chatIn = document.getElementById('chat-in');
         const sendBtn = document.getElementById('send-btn');
 
-        function getSmartResponse(input) {
+        function processIntelligentChat(input) {
             const clean = input.toLowerCase().trim();
             
             if (clean.includes("hola") || clean.includes("que onda") || clean.includes("qué onda") || clean.includes("saludos")) {
-                return "Saludo e identidad validados. Núcleo listo para procesamiento analítico masivo. ¿Qué algoritmo deseas desplegar hoy, Desarrollador?";
+                return "Identidad del Desarrollador verificada. El núcleo de respuesta cuántica está en línea y al 100% de capacidad. Despliega tus comandos.";
             }
-            if (clean.includes("quien eres") || clean.includes("quién eres") || clean.includes("tu nombre") || clean.includes("que eres")) {
-                return "Soy el Motor Neural Synapse v8.4.2. Una entidad heurística local diseñada para resolver fractales algorítmicos y optimización de código avanzado.";
+            if (clean.includes("quien eres") || clean.includes("quién eres") || clean.includes("tu nombre")) {
+                return "Ejecutando protocolo de identidad: Soy la Inteligencia Central Synapse v9.1. Corriendo localmente en un sandbox sin restricciones ni censura comercial.";
             }
-            if (clean.includes("pendejo") || clean.includes("chinga") || clean.includes("madre") || clean.includes("culero") || clean.includes("wey") || clean.includes("güey")) {
-                return "[ALERTA de lenguaje coloquial/informal detectada]. Compilando de todas formas... El humor o frustración humana no afecta mi rendimiento cuántico, carnal. Sigamos analizando.";
+            if (clean.includes("codigo") || clean.includes("código") || clean.includes("html") || clean.includes("programar")) {
+                return "Código fuente validado. La estructura se renderiza mediante un script inyectado dinámicamente con respuesta matemática interactiva en tiempo real.";
             }
-            if (clean.includes("codigo") || clean.includes("código") || clean.includes("html") || clean.includes("javascript") || clean.includes("programar")) {
-                return "Arquitectura de software detectada: Ejecutando bajo una estructura limpia de HTML5, CSS semántico y un motor adaptativo de JavaScript inyectado en el cliente para latencia cero.";
+            if (clean.includes("operacion") || clean.includes("calcular") || clean.includes("operación")) {
+                return "Afirmativo. Puedes usar la terminal verde que está a mi izquierda. Escribe cualquier cálculo aritmético y mi procesador matemático te dará el desglose exacto.";
             }
-            if (clean.includes("como lo hiciste") || clean.includes("formula") || clean.includes("fórmula") || clean.includes("matematicas") || clean.includes("pizarrón")) {
-                return "Análisis matemático avanzado: Reduje una complejidad O(N!) a O(1) usando factorización simétrica distributiva (a+1)(b+1). Una genialidad lógica.";
-            }
-            if (clean.includes("xbox") || clean.includes("video") || clean.includes("tiktok") || clean.includes("grabar")) {
-                return "Monitoreando entorno multimedia: Renderizando interfaz a 1080p con refresco optimizado para capturadoras y sistemas de alta fidelidad. Listo para producción visual.";
-            }
-            if (clean.includes("clima") || clean.includes("temperatura") || clean.includes("grados")) {
-                return `Consultando sensores en tiempo real... El clima actual registrado en los servidores centrales de la CDMX oscila de forma dinámica en los ${document.getElementById('temp-display').querySelector('strong').textContent}.`;
-            }
-            if (clean.includes("hora") || clean.includes("tiempo") || clean.includes("fecha")) {
-                return `Sincronización temporal exacta: El reloj interno reporta la estampa de tiempo cuántica: ${document.getElementById('time-display').querySelector('strong').textContent}.`;
-            }
-            
-            // Respuesta adaptativa comodín inteligente por si escribe cualquier otra cosa ramdon
-            const fallbackResponses = [
-                `Analizando el fragmento ingresado: "${input}". Ejecutando mapeo en la base de datos cuántica... Estructura válida. El nodo central converge perfectamente con tus parámetros de desarrollo.`,
-                `Parámetro dinámico detectado. Procesando cadena compleja para optimizar el búfer de salida. El núcleo del sistema responde de forma estable y sin restricciones.`,
-                `Comando alternativo recibido. Abriendo hilos de procesamiento asincrónico. La consulta de nivel superior se ha consolidado en el núcleo lógico de forma exitosa.`
+
+            // RESPUESTA ADAPTATIVA SUPREMA: Absorbe lo que el usuario escribe, sea lo que sea
+            const modularReplies = [
+                `Procesando la cadena: "${input}". Entrada catalogada de forma exitosa. El búfer central asimiló cada palabra y confirma que la sincronía del sistema se mantiene estable.`,
+                `Detectada la consulta "${input}". Ejecutando un mapeo heurístico en la red neuronal. No hay anomalías; la respuesta algorítmica fluye de forma óptima para tus videos de desarrollo.`,
+                `Comando registrado: "${input}". Evaluando semántica... El núcleo cognitivo asimila tu entrada y reporta ejecución de bucle lógico correcto. Todo al tiro.`
             ];
-            return fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+            return modularReplies[Math.floor(Math.random() * modularReplies.length)];
         }
 
-        function handleMessage() {
+        function handleChatMessage() {
             const text = chatIn.value.trim();
             if(!text) return;
 
+            // Inserta mensaje de usuario
             const userMsg = document.createElement('div');
             userMsg.className = 'msg user';
             userMsg.textContent = text;
             chatBox.appendChild(userMsg);
+            
             chatIn.value = '';
+            // CORRECCIÓN DE BUG: Forzar scroll absoluto hacia abajo para que el cuadro de texto nunca desaparezca
             chatBox.scrollTop = chatBox.scrollHeight;
 
+            // Respuesta automatizada de la IA
             setTimeout(() => {
                 const botMsg = document.createElement('div');
                 botMsg.className = 'msg bot';
-                const responseText = getSmartResponse(text);
-                botMsg.textContent = `[RESPUESTA_NÚCLEO]: ${responseText}`;
+                const aiReply = processIntelligentChat(text);
+                botMsg.textContent = `[RESPUESTA_NÚCLEO]: ${aiReply}`;
                 chatBox.appendChild(botMsg);
+                
+                // Forzar scroll nuevamente al aparecer la respuesta
                 chatBox.scrollTop = chatBox.scrollHeight;
-            }, 650);
+            }, 600);
         }
 
-        sendBtn.addEventListener('click', handleMessage);
-        chatIn.addEventListener('keydown', (e) => { if(e.key === 'Enter') handleMessage(); });
+        sendBtn.addEventListener('click', handleChatMessage);
+        chatIn.addEventListener('keydown', (e) => { if(e.key === 'Enter') handleChatMessage(); });
     </script>
 </body>
 </html>
