@@ -31,7 +31,6 @@
             grid-template-rows: 80px 1fr;
         }
 
-        /* Efecto de líneas de escaneo en pantalla */
         body::before {
             content: " ";
             display: block;
@@ -43,7 +42,6 @@
             pointer-events: none;
         }
 
-        /* ENCABEZADO */
         header {
             grid-column: 1 / -1;
             background: linear-gradient(180deg, rgba(0,243,255,0.1) 0%, transparent 100%);
@@ -74,7 +72,6 @@
             color: var(--neon-cyan);
         }
 
-        /* PANEL LATERAL / DIAGNÓSTICOS */
         sidebar {
             background: var(--panel-bg);
             border-right: 1px solid var(--border-color);
@@ -101,7 +98,6 @@
             color: #a0aec0;
         }
 
-        /* MONITOR PRINCIPAL */
         main {
             padding: 25px;
             display: grid;
@@ -125,7 +121,6 @@
             box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.05);
         }
 
-        /* Terminal Matemática */
         .math-terminal {
             flex-grow: 1;
             display: flex;
@@ -146,7 +141,6 @@
         .ai-eval { color: var(--neon-cyan); }
         .math-highlight { color: #fbd38d; }
 
-        /* CHATBOT DE IA */
         .chat-panel {
             display: flex;
             flex-direction: column;
@@ -220,7 +214,6 @@
             box-shadow: 0 0 10px var(--neon-purple);
         }
 
-        /* Simulación de Red Neuronal Activa */
         .canvas-simulation {
             height: 180px;
             border: 1px dashed rgba(0,243,255,0.3);
@@ -293,9 +286,9 @@
         </div>
 
         <div class="screen-panel chat-panel">
-            <div class="panel-title">NÚCLEO COGNITIVO - CHATBOT IA</div>
+            <div class="panel-title">NÚCLEO COGNITIVO - INTERFAZ INTELIGENTE</div>
             <div class="chat-output" id="chat-box">
-                <div class="msg bot">Núcleo listo. Ingresa cualquier consulta algorítmica o de análisis. Procesamiento sin restricciones activado.</div>
+                <div class="msg bot">[NÚCLEO_ONLINE]: Conexión establecida. Procesamiento heurístico sin restricciones activado. Escribe cualquier comando o consulta libremente.</div>
             </div>
             <div class="chat-input-area">
                 <input type="text" id="chat-in" placeholder="Escribe al núcleo del sistema...">
@@ -305,29 +298,23 @@
     </main>
 
     <script>
-        // Sistema de Telemetría en Tiempo Real (Contexto de CDMX)
         function updateTelemetry() {
             const now = new Date();
-            
-            // Formato de Fecha
             const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
             document.getElementById('date-display').innerHTML = `FECHA: <strong>${now.toLocaleDateString('es-MX', options)}</strong>`;
             
-            // Formato de hora con milisegundos simulados de alta precisión
             let hrs = String(now.getHours()).padStart(2, '0');
             let mins = String(now.getMinutes()).padStart(2, '0');
             let secs = String(now.getSeconds()).padStart(2, '0');
             let ms = String(Math.floor(Math.random() * 99)).padStart(2, '0');
             document.getElementById('time-display').innerHTML = `HORA_SISTEMA: <strong>${hrs}:${mins}:${secs}:${ms}</strong>`;
             
-            // Simulación dinámica de temperatura para CDMX
             const baseTemp = 24.5;
             const wave = Math.sin(now.getTime() / 60000) * 2;
             document.getElementById('temp-display').innerHTML = `TEMP_AMBIENTE: <strong>${(baseTemp + wave).toFixed(1)} °C</strong>`;
         }
         setInterval(updateTelemetry, 40);
 
-        // Secuencia Simbólica del Algoritmo del Pizarrón AIME
         const logSequence = [
             { text: "> Cargando Matriz del Pizarrón: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", type: "system-prompt" },
             { text: "> Ejecutando transformación: Regla f(a,b) = a + b + ab", type: "system-prompt" },
@@ -365,17 +352,47 @@
         }
         setTimeout(streamTerminal, 1000);
 
-        // Respuestas de IA Simuladas para el Chatbox Integrado
+        // MOTOR DE RESPUESTA INTELIGENTE LOCAL COMPLETO
         const chatBox = document.getElementById('chat-box');
         const chatIn = document.getElementById('chat-in');
         const sendBtn = document.getElementById('send-btn');
 
-        const neuralResponses = [
-            "Procesando matriz lógica. El factor algebraico ingresado indica una convergencia simétrica en redes neuronales recursivas.",
-            "Análisis computacional completado. Los vectores informáticos coinciden con un patrón asincrónico avanzado de nivel O(1).",
-            "Consulta registrada en los registros centrales. Se ha desplegado una respuesta heurística optimizada para entornos de desarrollo web masivo.",
-            "Estructura detectada. Ejecutando scripts automatizados en bucle seguro para consolidar las respuestas en el búfer dinámico del sistema."
-        ];
+        function getSmartResponse(input) {
+            const clean = input.toLowerCase().trim();
+            
+            if (clean.includes("hola") || clean.includes("que onda") || clean.includes("qué onda") || clean.includes("saludos")) {
+                return "Saludo e identidad validados. Núcleo listo para procesamiento analítico masivo. ¿Qué algoritmo deseas desplegar hoy, Desarrollador?";
+            }
+            if (clean.includes("quien eres") || clean.includes("quién eres") || clean.includes("tu nombre") || clean.includes("que eres")) {
+                return "Soy el Motor Neural Synapse v8.4.2. Una entidad heurística local diseñada para resolver fractales algorítmicos y optimización de código avanzado.";
+            }
+            if (clean.includes("pendejo") || clean.includes("chinga") || clean.includes("madre") || clean.includes("culero") || clean.includes("wey") || clean.includes("güey")) {
+                return "[ALERTA de lenguaje coloquial/informal detectada]. Compilando de todas formas... El humor o frustración humana no afecta mi rendimiento cuántico, carnal. Sigamos analizando.";
+            }
+            if (clean.includes("codigo") || clean.includes("código") || clean.includes("html") || clean.includes("javascript") || clean.includes("programar")) {
+                return "Arquitectura de software detectada: Ejecutando bajo una estructura limpia de HTML5, CSS semántico y un motor adaptativo de JavaScript inyectado en el cliente para latencia cero.";
+            }
+            if (clean.includes("como lo hiciste") || clean.includes("formula") || clean.includes("fórmula") || clean.includes("matematicas") || clean.includes("pizarrón")) {
+                return "Análisis matemático avanzado: Reduje una complejidad O(N!) a O(1) usando factorización simétrica distributiva (a+1)(b+1). Una genialidad lógica.";
+            }
+            if (clean.includes("xbox") || clean.includes("video") || clean.includes("tiktok") || clean.includes("grabar")) {
+                return "Monitoreando entorno multimedia: Renderizando interfaz a 1080p con refresco optimizado para capturadoras y sistemas de alta fidelidad. Listo para producción visual.";
+            }
+            if (clean.includes("clima") || clean.includes("temperatura") || clean.includes("grados")) {
+                return `Consultando sensores en tiempo real... El clima actual registrado en los servidores centrales de la CDMX oscila de forma dinámica en los ${document.getElementById('temp-display').querySelector('strong').textContent}.`;
+            }
+            if (clean.includes("hora") || clean.includes("tiempo") || clean.includes("fecha")) {
+                return `Sincronización temporal exacta: El reloj interno reporta la estampa de tiempo cuántica: ${document.getElementById('time-display').querySelector('strong').textContent}.`;
+            }
+            
+            // Respuesta adaptativa comodín inteligente por si escribe cualquier otra cosa ramdon
+            const fallbackResponses = [
+                `Analizando el fragmento ingresado: "${input}". Ejecutando mapeo en la base de datos cuántica... Estructura válida. El nodo central converge perfectamente con tus parámetros de desarrollo.`,
+                `Parámetro dinámico detectado. Procesando cadena compleja para optimizar el búfer de salida. El núcleo del sistema responde de forma estable y sin restricciones.`,
+                `Comando alternativo recibido. Abriendo hilos de procesamiento asincrónico. La consulta de nivel superior se ha consolidado en el núcleo lógico de forma exitosa.`
+            ];
+            return fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+        }
 
         function handleMessage() {
             const text = chatIn.value.trim();
@@ -391,11 +408,11 @@
             setTimeout(() => {
                 const botMsg = document.createElement('div');
                 botMsg.className = 'msg bot';
-                const randomReply = neuralResponses[Math.floor(Math.random() * neuralResponses.length)];
-                botMsg.textContent = `[EVALUACIÓN_NÚCLEO]: ${randomReply}`;
+                const responseText = getSmartResponse(text);
+                botMsg.textContent = `[RESPUESTA_NÚCLEO]: ${responseText}`;
                 chatBox.appendChild(botMsg);
                 chatBox.scrollTop = chatBox.scrollHeight;
-            }, 800);
+            }, 650);
         }
 
         sendBtn.addEventListener('click', handleMessage);
