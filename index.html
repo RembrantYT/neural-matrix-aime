@@ -32,7 +32,6 @@
             grid-template-rows: 80px 1fr;
         }
 
-        /* Líneas de escaneo CRT estilo Hacker */
         body::before {
             content: " ";
             display: block;
@@ -44,7 +43,6 @@
             pointer-events: none;
         }
 
-        /* ENCABEZADO */
         header {
             grid-column: 1 / -1;
             background: linear-gradient(180deg, rgba(0,243,255,0.15) 0%, transparent 100%);
@@ -76,7 +74,6 @@
             text-shadow: 0 0 5px rgba(0,243,255,0.5);
         }
 
-        /* PANEL LATERAL */
         sidebar {
             background: var(--panel-bg);
             border-right: 1px solid var(--border-color);
@@ -105,7 +102,6 @@
             color: #a0aec0;
         }
 
-        /* MONITOR PRINCIPAL */
         main {
             padding: 20px;
             display: grid;
@@ -132,7 +128,6 @@
             box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.08);
         }
 
-        /* Terminal Matemática Dinámica */
         .math-terminal {
             flex-grow: 1;
             display: flex;
@@ -156,7 +151,6 @@
         .math-highlight { color: #fbd38d; }
         .interactive-prompt { color: #ff007f; font-weight: bold; text-shadow: 0 0 5px rgba(255,0,127,0.5); }
 
-        /* Área de entrada de operaciones del sistema */
         .math-input-area {
             display: flex;
             gap: 10px;
@@ -181,7 +175,6 @@
             font-size: 14px;
         }
 
-        /* SECCIÓN CHATBOT INTELIGENTE */
         .chat-panel {
             display: flex;
             flex-direction: column;
@@ -260,9 +253,8 @@
             box-shadow: 0 0 12px var(--neon-purple);
         }
 
-        /* Flujo Neuronal Animado */
         .canvas-simulation {
-            height: 120px;
+            height: 100px;
             border: 1px dashed rgba(0,243,255,0.3);
             background: repeating-linear-gradient(0deg, transparent, transparent 14px, rgba(0,243,255,0.02) 15px);
             display: flex;
@@ -280,17 +272,18 @@
             animation: pulse 2s infinite linear;
         }
 
-        /* MODO ULTRA HACKER LATERAL */
+        /* CONSOLA DE INYECCIÓN DE DATOS REALISTA */
         .hacker-console-stream {
             flex-grow: 1;
-            background: rgba(0,0,0,0.9);
-            border: 1px solid rgba(255,0,127,0.2);
+            background: rgba(0,0,0,0.95);
+            border: 1px solid rgba(57, 255, 20, 0.2);
             border-radius: 4px;
             padding: 10px;
             font-size: 11px;
-            color: #ff0055;
-            overflow: hidden;
-            line-height: 1.5;
+            color: var(--neon-green);
+            overflow-y: hidden;
+            line-height: 1.6;
+            box-shadow: inset 0 0 10px rgba(0,0,0,1);
         }
 
         @keyframes pulse {
@@ -303,10 +296,10 @@
 <body>
 
     <header>
-        <div class="brand">MATRIZ_NÚCLEO // NODO INTERACTIVO</div>
+        <div class="brand">MATRIZ_NÚCLEO // INTERFAZ CUÁNTICA</div>
         <div class="telemetry-header">
             <div id="loc-display">GEOLOCALIZACIÓN: <strong style="color:#ff007f;">RASTREANDO...</strong></div>
-            <div id="temp-display">TEMP_LOCAL: <strong>-- °C</strong></div>
+            <div id="temp-display">TEMP_LOCAL: <strong id="temp-val">--.-</strong><strong> °C</strong></div>
             <div id="date-display">FECHA: <strong>--/--/----</strong></div>
             <div id="time-display">HORA_SISTEMA: <strong>00:00:00:00</strong></div>
         </div>
@@ -316,8 +309,8 @@
         <div>
             <div class="panel-title">ARQUITECTURA DEL SISTEMA</div>
             <div class="system-status">
-                NÚCLEO: SYNAPSE_v9.1.0-LNX<br>
-                ALGORITMO: PROCESADOR_HEURÍSTICO_VIVO<br>
+                NÚCLEO: SYNAPSE_v9.4.5-LNX<br>
+                ALGORITMO: NÚCLEO_ADAPTATIVO_REALTIME<br>
                 ESTADO DEL NODO: <span style="color: var(--neon-green);">INTERACTIVO [100%]</span><br>
                 SEGURIDAD: ENCRIPTACIÓN_EXTREMA
             </div>
@@ -332,11 +325,9 @@
                 </div>
             </div>
         </div>
-        <div style="display:flex; flex-direction:column; flex-grow:1;">
-            <div class="panel-title">INYECCIÓN DE DATOS EN VIVO</div>
-            <div class="hacker-console-stream" id="hacker-stream">
-                [INICIANDO MONITOREO DE PUERTOS]...
-            </div>
+        <div style="display:flex; flex-direction:column; flex-grow:1; max-height: 280px;">
+            <div class="panel-title">INYECCIÓN DE DATOS EN TIEMPO REAL</div>
+            <div class="hacker-console-stream" id="hacker-stream"></div>
         </div>
     </sidebar>
 
@@ -365,10 +356,11 @@
     </main>
 
     <script>
-        // 1. SISTEMA AUTOMÁTICO DE GEOLOCALIZACIÓN Y CLIMA REAL
+        let currentRealTemp = 22.0;
+
+        // 1. SISTEMA DE GEOLOCALIZACIÓN Y TELEMETRÍA DINÁMICA DE TEMPERATURA
         async function initLocationAndWeather() {
             try {
-                // Rastreo de ubicación por IP usando una API abierta confiable
                 const geoRes = await fetch('https://ipapi.co/json/');
                 const geoData = await geoRes.json();
                 
@@ -377,23 +369,20 @@
                     const region = geoData.region_code ? geoData.region_code.toUpperCase() : "MX";
                     document.getElementById('loc-display').innerHTML = `UBICACIÓN: <strong>${city}, ${region}</strong>`;
                     
-                    // Simulación meteorológica avanzada basada en latitud para dar realismo dinámico
                     const lat = geoData.latitude || 19.4;
-                    const pseudoTemp = (22 + Math.sin(lat) * 5 + (new Date().getHours() / 4)).toFixed(1);
-                    document.getElementById('temp-display').innerHTML = `TEMP_LOCAL: <strong>${pseudoTemp} °C</strong>`;
+                    currentRealTemp = parseFloat((21 + Math.sin(lat) * 4 + (new Date().getHours() / 5)).toFixed(1));
                 } else {
-                    throw new Error("Datos incompletos");
+                    throw new Error();
                 }
             } catch (err) {
-                // Caída de seguridad por si falla la API
                 document.getElementById('loc-display').innerHTML = `UBICACIÓN: <strong>CDMX, MX (ANÓNIMO)</strong>`;
-                document.getElementById('temp-display').innerHTML = `TEMP_LOCAL: <strong>24.8 °C</strong>`;
+                currentRealTemp = 24.5;
             }
         }
         initLocationAndWeather();
 
-        // Reloj de alta precisión
-        function updateClock() {
+        // Reloj y fluctuación térmica ultra precisa de los decimales en tiempo real
+        function updateClockAndSensors() {
             const now = new Date();
             const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
             document.getElementById('date-display').innerHTML = `FECHA: <strong>${now.toLocaleDateString('es-MX', options)}</strong>`;
@@ -403,27 +392,46 @@
             let secs = String(now.getSeconds()).padStart(2, '0');
             let ms = String(Math.floor(Math.random() * 99)).padStart(2, '0');
             document.getElementById('time-display').innerHTML = `HORA_SISTEMA: <strong>${hrs}:${mins}:${secs}:${ms}</strong>`;
-        }
-        setInterval(updateClock, 40);
-
-        // 2. MODO STREAM ULTRA HACKER LATERAL (SIMULADOR DE DATOS)
-        const hackerStream = document.getElementById('hacker-stream');
-        const hexChars = "0123456789ABCDEF//--**";
-        function generateHackerData() {
-            let line = `\n[INJECT] 0x${Math.floor(Math.random()*65535).toString(16).toUpperCase()} -> `;
-            for(let i=0; i<8; i++) line += hexChars[Math.floor(Math.random()*hexChars.length)];
-            hackerStream.textContent += line;
             
-            // Limitar líneas de consola hacker para que no se sature
-            const lines = hackerStream.textContent.split('\n');
-            if(lines.length > 8) {
-                lines.shift();
-                hackerStream.textContent = lines.join('\n');
-            }
+            // Simulación de oscilación en tiempo real de la temperatura verdadera (+-0.3 grados cada segundo)
+            const jitter = (Math.sin(now.getTime() / 800) * 0.2) + (Math.random() * 0.1 - 0.05);
+            document.getElementById('temp-val').textContent = (currentRealTemp + jitter).toFixed(1);
         }
-        setInterval(generateHackerData, 400);
+        setInterval(updateClockAndSensors, 40);
 
-        // 3. PROCESADOR MATEMÁTICO EN VIVO (DEMO + INTERACTIVO)
+        // 2. CONSOLA HACKER ULTRA COMPLEJA EN TIEMPO REAL
+        const hackerStream = document.getElementById('hacker-stream');
+        const hackerLogs = [
+            () => `[CONEXIÓN] Solicitud entrante desde nodo TCP/IP: ${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.84.${Math.floor(Math.random()*254)+1}`,
+            () => `[INYECCIÓN] Inyectando payloads en búfer de memoria virtual de pila... [OK]`,
+            () => `[HACK] Descifrando hash MD5: 0x${Math.floor(Math.random()*1e9).toString(16).toUpperCase()} -> ÉXITO`,
+            () => `[ANÁLISIS] Escaneando puertos abiertos en rango remoto... Puerto ${[22,80,443,8080,3306][Math.floor(Math.random()*5)]}: ABRE`,
+            () => `[ALERTA] Desbordamiento de búfer mitigado en bloque 0x7FFF${Math.floor(Math.random()*9000+1000)}`,
+            () => `[NÚCLEO] Volcado criptográfico completado. Fragmento llave AES generado.`,
+            () => `[SISTEMA] Sincronizando hilos asincrónicos de red con latencia: ${Math.floor(Math.random()*15)+2}ms`
+        ];
+
+        function runHackerStream() {
+            const randomLog = hackerLogs[Math.floor(Math.random() * hackerLogs.length)]();
+            const line = document.createElement('div');
+            line.style.marginBottom = '4px';
+            // Alterna colores entre verde y morado cibernético para verse más pro
+            line.style.color = Math.random() > 0.4 ? 'var(--neon-green)' : '#ff007f';
+            line.textContent = `> ${randomLog}`;
+            hackerStream.appendChild(line);
+            hackerStream.scrollTop = hackerStream.scrollHeight;
+            
+            // Mantener un límite de líneas físicas limpias en pantalla
+            if(hackerStream.children.length > 12) {
+                hackerStream.removeChild(hackerStream.firstChild);
+            }
+            
+            // Velocidad variable aleatoria para que parezca que realmente procesa datos
+            setTimeout(runHackerStream, Math.random() * 600 + 200);
+        }
+        setTimeout(runHackerStream, 500);
+
+        // 3. PROCESADOR MATEMÁTICO INTERACTIVO (DEMO + ENTRADA LIBRE)
         const logSequence = [
             { text: "> Cargando Matriz Base AIME: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", type: "system-prompt" },
             { text: "> Analizando Regla: f(a,b) = a + b + ab  ->  Complejidad Detectada: O(N!)", type: "system-prompt" },
@@ -450,29 +458,24 @@
                 logIndex++;
                 setTimeout(streamTerminal, 1000);
             } else {
-                // Al terminar la demostración, activa la caja para que el usuario calcule lo que quiera
                 mathIn.removeAttribute('disabled');
                 mathIn.focus();
             }
         }
         setTimeout(streamTerminal, 800);
 
-        // LÓGICA DE CÁLCULO REAL EN LA TERMINAL IZQUIERDA
         mathIn.addEventListener('keydown', (e) => {
             if(e.key === 'Enter') {
                 const query = mathIn.value.trim();
                 if(!query) return;
 
-                // Línea de comando del usuario
                 const userLine = document.createElement('div');
                 userLine.className = 'terminal-line system-prompt';
                 userLine.textContent = `SISTEMA@NUCLEO:~$: ${query}`;
                 termBox.appendChild(userLine);
 
                 try {
-                    // Limpieza básica de caracteres maliciosos para seguridad, permitiendo operaciones básicas
                     const sanitized = query.replace(/[^0-9\+\-\*\/\(\)\.\s]/g, '');
-                    // Evalúa matemáticamente de forma real en el cliente
                     const result = new Function(`return (${sanitized})`)();
                     
                     if(result !== undefined && !isNaN(result)) {
@@ -505,7 +508,7 @@
             }
         });
 
-        // 4. MOTOR DEL CHATBOT COGNITIVO INTERACTIVO (DERECHA)
+        // 4. CHAT INTERACTIVO CON SCROLL PERFECTO
         const chatBox = document.getElementById('chat-box');
         const chatIn = document.getElementById('chat-in');
         const sendBtn = document.getElementById('send-btn');
@@ -517,7 +520,7 @@
                 return "Identidad del Desarrollador verificada. El núcleo de respuesta cuántica está en línea y al 100% de capacidad. Despliega tus comandos.";
             }
             if (clean.includes("quien eres") || clean.includes("quién eres") || clean.includes("tu nombre")) {
-                return "Ejecutando protocolo de identidad: Soy la Inteligencia Central Synapse v9.1. Corriendo localmente en un sandbox sin restricciones ni censura comercial.";
+                return "Ejecutando protocolo de identidad: Soy la Inteligencia Central Synapse v9.4.5. Corriendo localmente en un sandbox sin restricciones ni censura comercial.";
             }
             if (clean.includes("codigo") || clean.includes("código") || clean.includes("html") || clean.includes("programar")) {
                 return "Código fuente validado. La estructura se renderiza mediante un script inyectado dinámicamente con respuesta matemática interactiva en tiempo real.";
@@ -526,7 +529,6 @@
                 return "Afirmativo. Puedes usar la terminal verde que está a mi izquierda. Escribe cualquier cálculo aritmético y mi procesador matemático te dará el desglose exacto.";
             }
 
-            // RESPUESTA ADAPTATIVA SUPREMA: Absorbe lo que el usuario escribe, sea lo que sea
             const modularReplies = [
                 `Procesando la cadena: "${input}". Entrada catalogada de forma exitosa. El búfer central asimiló cada palabra y confirma que la sincronía del sistema se mantiene estable.`,
                 `Detectada la consulta "${input}". Ejecutando un mapeo heurístico en la red neuronal. No hay anomalías; la respuesta algorítmica fluye de forma óptima para tus videos de desarrollo.`,
@@ -539,25 +541,20 @@
             const text = chatIn.value.trim();
             if(!text) return;
 
-            // Inserta mensaje de usuario
             const userMsg = document.createElement('div');
             userMsg.className = 'msg user';
             userMsg.textContent = text;
             chatBox.appendChild(userMsg);
             
             chatIn.value = '';
-            // CORRECCIÓN DE BUG: Forzar scroll absoluto hacia abajo para que el cuadro de texto nunca desaparezca
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Respuesta automatizada de la IA
             setTimeout(() => {
                 const botMsg = document.createElement('div');
                 botMsg.className = 'msg bot';
                 const aiReply = processIntelligentChat(text);
                 botMsg.textContent = `[RESPUESTA_NÚCLEO]: ${aiReply}`;
                 chatBox.appendChild(botMsg);
-                
-                // Forzar scroll nuevamente al aparecer la respuesta
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, 600);
         }
