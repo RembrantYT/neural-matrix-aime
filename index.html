@@ -29,7 +29,7 @@
             height: 100vh;
             display: grid;
             grid-template-columns: 360px 1fr;
-            grid-template-rows: 80px 1fr;
+            grid-template-rows: 80px 1fr 40px; /* Añadido espacio abajo para el footer */
         }
 
         body::before {
@@ -43,6 +43,7 @@
             pointer-events: none;
         }
 
+        /* ENCABEZADO */
         header {
             grid-column: 1 / -1;
             background: linear-gradient(180deg, rgba(0,243,255,0.15) 0%, transparent 100%);
@@ -52,6 +53,7 @@
             align-items: center;
             padding: 0 30px;
             box-shadow: 0 0 25px rgba(0, 243, 255, 0.25);
+            z-index: 10;
         }
 
         .brand {
@@ -74,6 +76,7 @@
             text-shadow: 0 0 5px rgba(0,243,255,0.5);
         }
 
+        /* PANEL LATERAL */
         sidebar {
             background: var(--panel-bg);
             border-right: 1px solid var(--border-color);
@@ -102,12 +105,13 @@
             color: #a0aec0;
         }
 
+        /* MONITOR PRINCIPAL */
         main {
             padding: 20px;
             display: grid;
             grid-template-columns: 1fr 420px;
             gap: 20px;
-            height: calc(100vh - 80px);
+            height: 100%;
             overflow: hidden;
         }
 
@@ -128,6 +132,7 @@
             box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.08);
         }
 
+        /* Terminal Matemática */
         .math-terminal {
             flex-grow: 1;
             display: flex;
@@ -175,6 +180,7 @@
             font-size: 14px;
         }
 
+        /* SECCIÓN CHATBOT */
         .chat-panel {
             display: flex;
             flex-direction: column;
@@ -272,7 +278,6 @@
             animation: pulse 2s infinite linear;
         }
 
-        /* CONSOLA DE INYECCIÓN DE DATOS REALISTA */
         .hacker-console-stream {
             flex-grow: 1;
             background: rgba(0,0,0,0.95);
@@ -286,10 +291,86 @@
             box-shadow: inset 0 0 10px rgba(0,0,0,1);
         }
 
+        /* BARRA DE DERECHOS RESERVADOS */
+        footer {
+            grid-column: 1 / -1;
+            background: rgba(4, 5, 15, 0.95);
+            border-top: 1px solid rgba(0, 243, 255, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            color: rgba(143, 160, 221, 0.6);
+            letter-spacing: 1px;
+            z-index: 10;
+        }
+
+        footer strong {
+            color: var(--neon-cyan);
+            margin-left: 4px;
+        }
+
         @keyframes pulse {
             0% { transform: translateY(-40px); opacity: 0; }
             50% { opacity: 1; }
             100% { transform: translateY(40px); opacity: 0; }
+        }
+
+        /* =======================================================
+           MÓDULO RESPONSIVE: ARREGLO EXCLUSIVO PARA CELULARES
+        ======================================================= */
+        @media (max-width: 900px) {
+            body {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto 1fr auto; /* Apilado vertical */
+                overflow-y: auto; /* Permite scroll general en el cel si es necesario */
+                height: auto;
+            }
+
+            header {
+                flex-direction: column;
+                padding: 15px;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .brand {
+                font-size: 18px;
+            }
+
+            .telemetry-header {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+                font-size: 11px;
+            }
+
+            /* Ocultamos la barra de inyección hacker lateral en el cel para que no estorbe */
+            sidebar {
+                display: none; 
+            }
+
+            main {
+                grid-template-columns: 1fr; /* Una sola columna en móvil */
+                height: calc(100vh - 180px); /* Ajuste de altura para que quepa todo */
+                padding: 10px;
+                gap: 15px;
+                overflow-y: auto;
+            }
+
+            .visualizer-container {
+                height: 320px; /* Tamaño fijo controlado en móvil para la terminal */
+            }
+
+            .chat-panel {
+                height: 380px; /* Tamaño controlado para el chat en móvil */
+            }
+
+            footer {
+                padding: 12px 5px;
+                text-align: center;
+                font-size: 10px;
+            }
         }
     </style>
 </head>
@@ -355,10 +436,13 @@
         </div>
     </main>
 
+    <footer>
+        © 2026 MATRIZ NÚCLEO IA. TODOS LOS DERECHOS RESERVADOS // PROPIEDAD DE: <strong>REMBRANDT</strong>
+    </footer>
+
     <script>
         let currentRealTemp = 22.0;
 
-        // 1. SISTEMA DE GEOLOCALIZACIÓN Y TELEMETRÍA DINÁMICA DE TEMPERATURA
         async function initLocationAndWeather() {
             try {
                 const geoRes = await fetch('https://ipapi.co/json/');
@@ -381,7 +465,6 @@
         }
         initLocationAndWeather();
 
-        // Reloj y fluctuación térmica ultra precisa de los decimales en tiempo real
         function updateClockAndSensors() {
             const now = new Date();
             const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -393,13 +476,11 @@
             let ms = String(Math.floor(Math.random() * 99)).padStart(2, '0');
             document.getElementById('time-display').innerHTML = `HORA_SISTEMA: <strong>${hrs}:${mins}:${secs}:${ms}</strong>`;
             
-            // Simulación de oscilación en tiempo real de la temperatura verdadera (+-0.3 grados cada segundo)
             const jitter = (Math.sin(now.getTime() / 800) * 0.2) + (Math.random() * 0.1 - 0.05);
             document.getElementById('temp-val').textContent = (currentRealTemp + jitter).toFixed(1);
         }
         setInterval(updateClockAndSensors, 40);
 
-        // 2. CONSOLA HACKER ULTRA COMPLEJA EN TIEMPO REAL
         const hackerStream = document.getElementById('hacker-stream');
         const hackerLogs = [
             () => `[CONEXIÓN] Solicitud entrante desde nodo TCP/IP: ${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.84.${Math.floor(Math.random()*254)+1}`,
@@ -412,26 +493,23 @@
         ];
 
         function runHackerStream() {
-            const randomLog = hackerLogs[Math.floor(Math.random() * hackerLogs.length)]();
-            const line = document.createElement('div');
-            line.style.marginBottom = '4px';
-            // Alterna colores entre verde y morado cibernético para verse más pro
-            line.style.color = Math.random() > 0.4 ? 'var(--neon-green)' : '#ff007f';
-            line.textContent = `> ${randomLog}`;
-            hackerStream.appendChild(line);
-            hackerStream.scrollTop = hackerStream.scrollHeight;
-            
-            // Mantener un límite de líneas físicas limpias en pantalla
-            if(hackerStream.children.length > 12) {
-                hackerStream.removeChild(hackerStream.firstChild);
+            if (hackerStream) {
+                const randomLog = hackerLogs[Math.floor(Math.random() * hackerLogs.length)]();
+                const line = document.createElement('div');
+                line.style.marginBottom = '4px';
+                line.style.color = Math.random() > 0.4 ? 'var(--neon-green)' : '#ff007f';
+                line.textContent = `> ${randomLog}`;
+                hackerStream.appendChild(line);
+                hackerStream.scrollTop = hackerStream.scrollHeight;
+                
+                if(hackerStream.children.length > 12) {
+                    hackerStream.removeChild(hackerStream.firstChild);
+                }
             }
-            
-            // Velocidad variable aleatoria para que parezca que realmente procesa datos
             setTimeout(runHackerStream, Math.random() * 600 + 200);
         }
         setTimeout(runHackerStream, 500);
 
-        // 3. PROCESADOR MATEMÁTICO INTERACTIVO (DEMO + ENTRADA LIBRE)
         const logSequence = [
             { text: "> Cargando Matriz Base AIME: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", type: "system-prompt" },
             { text: "> Analizando Regla: f(a,b) = a + b + ab  ->  Complejidad Detectada: O(N!)", type: "system-prompt" },
@@ -508,7 +586,6 @@
             }
         });
 
-        // 4. CHAT INTERACTIVO CON SCROLL PERFECTO
         const chatBox = document.getElementById('chat-box');
         const chatIn = document.getElementById('chat-in');
         const sendBtn = document.getElementById('send-btn');
